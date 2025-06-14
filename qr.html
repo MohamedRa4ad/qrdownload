@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>كود الطالب - مستر عمرو عمر</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      text-align: center;
+      margin: 0;
+      background: linear-gradient(135deg, #e0f7fa, #ffffff);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    h1 {
+      color: #00796b;
+      margin-bottom: 20px;
+    }
+
+    input {
+      padding: 12px;
+      font-size: 18px;
+      width: 80%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #00796b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #004d40;
+    }
+
+    #qr {
+      margin-top: 30px;
+    }
+
+    img {
+      max-width: 300px;
+      margin-top: 20px;
+      border: 2px solid #00796b;
+      border-radius: 8px;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1> الطالب Qr تحميل</h1>
+    <p>مستر عمرو عمر - قيصر الكيميا</p>
+    <input type="text" id="studentId" placeholder="ادخل بار كود الطالب">
+    <br>
+    <button onclick="showQR()">بحث</button>
+
+    <div id="qr"></div>
+  </div>
+
+  <div class="footer">
+    &copy; جميع الحقوق محفوظة لمستر عمرو عمر - 2025
+  </div>
+
+  <script>
+    function showQR() {
+      const id = document.getElementById('studentId').value.trim();
+      const qrDiv = document.getElementById('qr');
+      qrDiv.innerHTML = '';
+      const imgPath = `qrcodes/${id}.png`;
+      const img = new Image();
+      img.src = imgPath;
+
+      img.onload = function () {
+        qrDiv.innerHTML = `
+          <p>الكود الخاص بك:</p>
+          <img src="${imgPath}" alt="QR Code">
+          <br><br>
+          <a href="${imgPath}" download="QR_${id}.png">
+            <button>تحميل الكود</button>
+          </a>
+        `;
+      };
+
+      img.onerror = function () {
+        qrDiv.innerHTML = `<p style="color:red;">لم يتم العثور على كود بهذا الرقم!</p>`;
+      };
+    }
+  </script>
+
+</body>
+</html>
