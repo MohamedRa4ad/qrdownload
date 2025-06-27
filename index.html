@@ -138,57 +138,77 @@
   <footer>Powered by Mohamed Rashad © 2025</footer>
 
   <script>
-    let downloaded = new Set();
+  let usedQRCodes = new Set();
+  let downloaded = new Set();
 
-    function showQR() {
-      const id = document.getElementById('studentId').value.trim();
-      const img = document.getElementById('qrImage');
+  function showQR() {
+    const id = document.getElementById('studentId').value.trim();
+    const img = document.getElementById('qrImage');
 
-      if (id) {
-        const testImg = new Image();
-        testImg.onload = function () {
-          img.src = `qrcodes/${id}.png`;
-          img.style.display = 'block';
-        };
-        testImg.onerror = function () {
-          alert('لم يتم العثور على الكود لهذا الرقم. تأكد من صحة الرقم.');
-          img.style.display = 'none';
-        };
-        testImg.src = `qrcodes/${id}.png`;
-      } else {
+    if (!id) {
+      alert("من فضلك أدخل رقم الطالب");
+      img.style.display = 'none';
+      return;
+    }
+
+    if (usedQRCodes.has(id)) {
+      alert("تم عرض هذا الكود من قبل. لا يمكن عرضه مرة أخرى.");
+      img.style.display = 'none';
+      return;
+    }
+
+    const testImg = new Image();
+    testImg.onload = function () {
+      img.src = `qrcodes/${id}.png`;
+      img.style.display = 'block';
+      usedQRCodes.add(id);
+
+      // إخفاؤه تلقائيًا بعد 10 ثواني
+      setTimeout(() => {
         img.style.display = 'none';
-      }
+      }, 10000);
+    };
+    testImg.onerror = function () {
+      alert("الكود غير موجود لهذا الرقم.");
+      img.style.display = 'none';
+    };
+    testImg.src = `qrcodes/${id}.png`;
+  }
+
+  function downloadQR() {
+    const id = document.getElementById('studentId').value.trim();
+
+    if (!id) {
+      alert("من فضلك أدخل رقم الطالب");
+      return;
     }
 
-    function downloadQR() {
-      const id = document.getElementById('studentId').value.trim();
-      if (!id) {
-        alert("من فضلك أدخل رقم الطالب أولاً");
-        return;
-      }
-
-      if (downloaded.has(id)) {
-        alert("تم تحميل هذا الكود بالفعل.");
-        return;
-      }
-
-      const imgUrl = `qrcodes/${id}.png`;
-
-      const testImg = new Image();
-      testImg.onload = function () {
-        const link = document.createElement('a');
-        link.href = imgUrl;
-        link.download = `${id}.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        downloaded.add(id);
-      };
-      testImg.onerror = function () {
-        alert('لم يتم العثور على الكود لهذا الرقم.');
-      };
-      testImg.src = imgUrl;
+    if (downloaded.has(id)) {
+      alert("تم تحميل هذا الكود بالفعل ولا يمكن تحميله مرة أخرى.");
+      return;
     }
-  </script>
+
+    const imgUrl = `qrcodes/${id}.png`;
+    const testImg = new Image();
+
+    testImg.onload = function () {
+      const link = document.createElement('a');
+      link.href = imgUrl;
+      link.download = `${id}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      downloaded.add(id);
+      usedQRCodes.add(id); // نحسبه عرض وتحميل بنفس الوقت
+      document.getElementById('qrImage').style.display = 'none';
+    };
+
+    testImg.onerror = function () {
+      alert("الصورة غير موجودة.");
+    };
+
+    testImg.src = imgUrl;
+  }
+</script>
 </body>
 </html>
