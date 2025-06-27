@@ -124,7 +124,10 @@
 <body>
   <h1><i class="fas fa-qrcode"></i> كود QR الخاص بك - مستر عمرو عمر</h1>
 
-  <input type="text" id="studentId" placeholder="ادخل رقم الطالب" />
+ <input type="text" id="studentId" placeholder="ادخل رقم الطالب"
+  maxlength="4" pattern="\d*" inputmode="numeric"
+  oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,4);" />
+
 
   <div class="btns">
     <button class="btn" onclick="showQR()"><i class="fas fa-eye"></i> عرض الكود</button>
