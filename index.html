@@ -9,12 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Cairo', sans-serif;
       background: linear-gradient(135deg, #e3f2fd, #ffffff);
@@ -24,15 +19,12 @@
       align-items: center;
       padding: 2rem 1rem;
     }
-
     h1 {
       font-size: 2.4rem;
       margin-bottom: 2rem;
       color: #0d47a1;
       text-align: center;
-      animation: fadeIn 1s ease-in-out;
     }
-
     input {
       padding: 0.9rem 1rem;
       font-size: 1.1rem;
@@ -44,21 +36,17 @@
       max-width: 350px;
       transition: 0.3s;
     }
-
     input:focus {
       border-color: #1976d2;
       box-shadow: 0 0 8px rgba(25, 118, 210, 0.3);
     }
-
     .btns {
       display: flex;
       gap: 1rem;
       flex-wrap: wrap;
       justify-content: center;
       margin-bottom: 1.5rem;
-      animation: fadeIn 1.3s ease-in-out;
     }
-
     .btn {
       display: inline-flex;
       align-items: center;
@@ -72,12 +60,10 @@
       cursor: pointer;
       transition: all 0.3s ease-in-out;
     }
-
     .btn:hover {
       background-color: #1565c0;
       transform: scale(1.05);
     }
-
     img {
       margin-top: 2rem;
       max-width: 300px;
@@ -87,52 +73,51 @@
       padding: 0.5rem;
       background: white;
       display: none;
-      animation: fadeIn 1s ease-in-out;
     }
-
-    .social, .support {
-      margin-top: 2.5rem;
+    .support, .social {
+      margin-top: 2rem;
       text-align: center;
-      animation: fadeIn 1.6s ease-in-out;
     }
-
-    .social a, .support a {
+    .support a, .social a {
       color: #1976d2;
       text-decoration: none;
       font-weight: bold;
     }
-
-    .social a:hover, .support a:hover {
+    .support a:hover, .social a:hover {
       color: #0d47a1;
       text-decoration: underline;
     }
-
     footer {
       margin-top: auto;
       font-size: 0.9rem;
       color: #555;
       text-align: center;
       padding: 1.5rem 0 0.5rem;
-      animation: fadeIn 2s ease-in-out;
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
+    #statusMessage {
+      margin-top: 1rem;
+      font-size: 1rem;
+      color: #d32f2f;
+      font-weight: bold;
     }
-
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #1976d2;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      display: none;
+      margin-top: 1rem;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
     @media (max-width: 600px) {
-      h1 {
-        font-size: 1.7rem;
-      }
-      input, .btn {
-        width: 100%;
-        justify-content: center;
-      }
-      .btns {
-        flex-direction: column;
-        align-items: center;
-      }
+      h1 { font-size: 1.7rem; }
+      input, .btn { width: 100%; justify-content: center; }
+      .btns { flex-direction: column; align-items: center; }
     }
   </style>
 </head>
@@ -142,25 +127,23 @@
   <input type="text" id="studentId" placeholder="ادخل رقم الطالب" />
 
   <div class="btns">
-    <button class="btn" onclick="showQR()">
-      <i class="fas fa-eye"></i> عرض الكود
-    </button>
-    <button class="btn" onclick="downloadQR()">
-      <i class="fas fa-download"></i> تحميل الكود
-    </button>
+    <button class="btn" onclick="showQR()"><i class="fas fa-eye"></i> عرض الكود</button>
+    <button class="btn" onclick="downloadQR()"><i class="fas fa-download"></i> تحميل الكود</button>
   </div>
 
+  <div class="spinner" id="spinner"></div>
+  <div id="statusMessage"></div>
   <img id="qrImage" src="" alt="QR Code" />
 
- <div class="support">
-  <p><i class="fab fa-whatsapp" style="color: #25D366;"></i>
-    للدعم الفني عبر واتساب:
-    <a href="https://wa.me/201121365065?text=مرحبًا،%20لدي%20مشكلة%20في%20عرض%20كود%20QR%20الخاص%20بي." target="_blank">
-      تواصل الآن
-    </a>
-  </p>
-</div>
+  <div class="support">
+    <p><i class="fas fa-headset"></i> للدعم الفني: <a href="tel:+201121365065">+20 112 136 5065</a></p>
+  </div>
 
+  <div class="social">
+    <p><i class="fab fa-instagram"></i> تابعني على إنستجرام: 
+      <a href="https://www.instagram.com/mu7amed_ra4ad/" target="_blank">@mu7amed_ra4ad</a>
+    </p>
+  </div>
 
   <footer>Powered by Mohamed Rashad © 2025</footer>
 
@@ -168,26 +151,62 @@
     function showQR() {
       const id = document.getElementById('studentId').value.trim();
       const img = document.getElementById('qrImage');
-      if (id) {
+      const msg = document.getElementById('statusMessage');
+      const spinner = document.getElementById('spinner');
+
+      msg.textContent = '';
+      img.style.display = 'none';
+
+      if (!id) {
+        msg.textContent = "من فضلك أدخل رقم الطالب";
+        return;
+      }
+
+      spinner.style.display = 'block';
+      const testImg = new Image();
+      testImg.onload = function () {
         img.src = `qrcodes/${id}.png`;
         img.style.display = 'block';
-      } else {
-        img.style.display = 'none';
-      }
+        msg.style.color = 'green';
+        msg.textContent = '✅ تم عرض الكود بنجاح';
+        spinner.style.display = 'none';
+      };
+      testImg.onerror = function () {
+        msg.textContent = "❌ رقم الطالب غير صحيح أو الكود غير موجود";
+        spinner.style.display = 'none';
+      };
+      testImg.src = `qrcodes/${id}.png`;
     }
 
     function downloadQR() {
       const id = document.getElementById('studentId').value.trim();
-      if (id) {
+      const msg = document.getElementById('statusMessage');
+      const spinner = document.getElementById('spinner');
+
+      msg.textContent = '';
+      if (!id) {
+        msg.textContent = "من فضلك أدخل رقم الطالب";
+        return;
+      }
+
+      spinner.style.display = 'block';
+      const testImg = new Image();
+      testImg.onload = function () {
         const link = document.createElement('a');
         link.href = `qrcodes/${id}.png`;
         link.download = `${id}.png`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-      } else {
-        alert('من فضلك أدخل رقم الطالب أولاً');
-      }
+        msg.style.color = 'green';
+        msg.textContent = '📥 تم تحميل الكود بنجاح';
+        spinner.style.display = 'none';
+      };
+      testImg.onerror = function () {
+        msg.textContent = "❌ رقم الطالب غير صحيح أو الكود غير موجود";
+        spinner.style.display = 'none';
+      };
+      testImg.src = `qrcodes/${id}.png`;
     }
   </script>
 </body>
