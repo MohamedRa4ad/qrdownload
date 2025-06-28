@@ -840,14 +840,27 @@
     spinner.style.display = show ? 'block' : 'none';
   }
 
-  function generateQRCode(studentId) {
-    // This is a mock implementation for demonstration purposes
-    // In a real application, you would use a QR code generation library or API
+function loadQRCode(studentId) {
+    // Load QR code from qrcodes folder
     const qrImage = document.getElementById('qrImage');
-    qrImage.src = `https://quickchart.io/qr?text=STUDENT_${studentId}&size=300`;
-    return qrImage.src;
+    const qrPath = `qrcodes/${studentId}.png`;
+    
+    // Check if the QR code exists
+    qrImage.onerror = function() {
+      showStatus('لم يتم العثور على كود الحضور لهذا الطالب', 'error');
+      showSpinner(false);
+      document.getElementById('qrContainer').style.display = 'none';
+    };
+    
+    qrImage.onload = function() {
+      showStatus('تم توليد كود الحضور بنجاح', 'success');
+      showSpinner(false);
+      document.getElementById('qrContainer').style.display = 'block';
+    };
+    
+    qrImage.src = qrPath;
+    return qrPath;
   }
-
   function showQR() {
     const studentId = document.getElementById('studentId').value;
     if (studentId.length !== 4) {
