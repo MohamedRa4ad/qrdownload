@@ -840,7 +840,7 @@
     spinner.style.display = show ? 'block' : 'none';
   }
 
-function loadQRCode(studentId) {
+  function loadQRCode(studentId) {
     // Load QR code from qrcodes folder
     const qrImage = document.getElementById('qrImage');
     const qrPath = `qrcodes/${studentId}.png`;
@@ -861,55 +861,67 @@ function loadQRCode(studentId) {
     qrImage.src = qrPath;
     return qrPath;
   }
+
   function showQR() {
     const studentId = document.getElementById('studentId').value;
+    const statusEl = document.getElementById('statusMessage');
+    const qrImage = document.getElementById('qrImage');
+    const qrContainer = document.getElementById('qrContainer');
+
     if (studentId.length !== 4) {
-      showStatus('يرجى إدخال رقم الطالب المكون من 4 أرقام', 'error');
-      return;
+        showStatus('يرجى إدخال رقم الطالب المكون من 4 أرقام', 'error');
+        return;
     }
 
     showSpinner(true);
-    
-    // Simulate API call or QR generation process
-    setTimeout(() => {
-      const qrUrl = generateQRCode(studentId);
-      const qrContainer = document.getElementById('qrContainer');
-      qrContainer.style.display = 'block';
-      document.getElementById('qrImage').src = qrUrl;
-      showSpinner(false);
-      showStatus('تم توليد كود الحضور بنجاح', 'success');
-    }, 1500);
-  }
+    qrContainer.style.display = 'none';
+
+    // تكوين رابط الصورة من الفولدر
+    const qrPath = `qrcodes/${studentId}.png`;
+
+    // التحقق من وجود الكود باستخدام fetch أو onload
+    const img = new Image();
+    img.src = qrPath;
+
+    img.onload = function () {
+        qrImage.src = qrPath;
+        qrContainer.style.display = 'block';
+        showStatus('تم العثور على كود الحضور', 'success');
+        showSpinner(false);
+    };
+
+    img.onerror = function () {
+        showStatus('لم يتم العثور على كود الحضور لهذا الطالب', 'error');
+        showSpinner(false);
+    };
+}
 
   function downloadQR() {
     const studentId = document.getElementById('studentId').value;
+    const qrImage = document.getElementById('qrImage');
+
     if (studentId.length !== 4) {
-      showStatus('يرجى إدخال رقم الطالب المكون من 4 أرقام', 'error');
-      return;
+        showStatus('يرجى إدخال رقم الطالب المكون من 4 أرقام', 'error');
+        return;
     }
 
     showSpinner(true);
-    
-    // Simulate API call or QR generation process
-    setTimeout(() => {
-      const qrUrl = generateQRCode(studentId);
-      
-      // Create a temporary link element
-      const link = document.createElement('a');
-      link.href = qrUrl;
-      link.download = `attendance_qr_${studentId}.png`;
-      
-      // Append to body and trigger click
-      document.body.appendChild(link);
-      link.click();
-      
-      // Clean up
-      document.body.removeChild(link);
-      
-      showSpinner(false);
-      showStatus('تم تنزيل كود الحضور بنجاح', 'success');
-    }, 1000);
-  }
+
+    const qrPath = `qrcodes/${studentId}.png`;
+
+    const link = document.createElement('a');
+    link.href = qrPath;
+    link.download = `كود_حضور_${studentId}.png`; // اسم الملف عند التحميل
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showSpinner(false);
+    showStatus('تم تنزيل كود الحضور بنجاح', 'success');
+}
+
+  
 
   // Initialize the page
   window.onload = () => {
@@ -928,3 +940,4 @@ function loadQRCode(studentId) {
     });
   };
 </script>
+
